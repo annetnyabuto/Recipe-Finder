@@ -273,3 +273,9 @@ async function deleteLocalRecipe(id) {
 
 // Initial load: fetch and show local recipes
 fetchLocalRecipes();
+//light and dark mode button
+const themeToggleBtn = document.getElementById('theme-toggle-btn');
+themeToggleBtn.addEventListener('click', () => {
+  document.body.classList.toggle('dark-mode');
+});
+

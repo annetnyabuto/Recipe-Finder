@@ -1,10 +1,14 @@
+/* =====================
+   Final CSS for Recipe App (with Light/Dark Mode)
+   ===================== */
+
 :root {
   --light-bg: #f8f9fa;
   --text-dark: #343a40;
   --primary-color: #4caf50;
   --error-color: #dc3545;
   --warning-color: #ffc107;
-  
+
   --bg-color: var(--light-bg);
   --text-color: var(--text-dark);
   --card-bg: #ffffff;
@@ -48,13 +52,15 @@ h1 {
   letter-spacing: -1px;
 }
 
+/* Removed unused .search-theme-wrapper */
+
+/* Search box styles */
 .search-box {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 30px;
   max-width: 600px;
-  margin-inline: auto;
+  margin-inline: auto; /* center horizontally */
   border-radius: 8px;
 }
 
@@ -86,8 +92,34 @@ h1 {
   background-color: #388e3c;
 }
 
+/* Fix theme toggle button */
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+}
+
+#theme-toggle-btn {
+  background: none;
+  border: 2px solid var(--text-color);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--text-color);
+  transition: background 0.3s;
+}
+
+#theme-toggle-btn:hover {
+  background: var(--text-color);
+  color: var(--bg-color);
+}
+
 .random-button-container {
-  margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 .random-recipe-button {
@@ -259,28 +291,3 @@ h1 {
 #add-recipe-form.hidden {
   display: none;
 }
-
-/* Theme Toggle Button */
-.theme-toggle {
-  display: flex;
-  justify-content: flex-end;
-  margin: 10px auto 20px;
-  max-width: 1200px;
-}
-
-#theme-toggle-btn {
-  background: none;
-  border: 2px solid var(--text-color);
-  padding: 8px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  color: var(--text-color);
-  transition: background 0.3s;
-}
-
-#theme-toggle-btn:hover {
-  background: var(--text-color);
-  color: var(--bg-color)
-}
-
