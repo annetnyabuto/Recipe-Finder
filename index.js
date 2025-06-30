@@ -2,19 +2,38 @@ const SEARCH_API_URL = "https://www.themealdb.com/api/json/v1/1/search.php?s=";
 const RANDOM_API_URL = "https://www.themealdb.com/api/json/v1/1/random.php";
 const LOOKUP_API_URL = "https://www.themealdb.com/api/json/v1/1/lookup.php?i=";
 
+// Local json-server endpoint for custom recipes
+const LOCAL_API_URL = "http://localhost:3001/recipes";
+
 const searchForm = document.getElementById("search-form");
 const searchInput = document.getElementById("search-input");
 const resultsGrid = document.getElementById("search-results");
 const messageArea = document.getElementById("message-area");
-const randomButton = document.getElementById("random-recipe-button");
+const addRecipeBtn = document.getElementById("add-recipe-button");
+const addForm = document.getElementById("add-recipe-form");
+const cancelAddBtn = document.getElementById("cancel-add-recipe");
 const modal = document.getElementById("recipe-modal");
 const modalContent = document.getElementById("recipe-details-content");
 const modalCloseBtn = document.querySelector(".recipe-detail-btn");
 
+// Show/hide Add Recipe form
+addRecipeBtn.addEventListener("click", () => {
+  addForm.classList.remove("hidden");
+  addRecipeBtn.style.display = "none";
+  clearMessage();
+});
+
+cancelAddBtn.addEventListener("click", () => {
+  addForm.classList.add("hidden");
+  addRecipeBtn.style.display = "inline-block";
+  addForm.reset();
+  clearMessage();
+});
+
+// Search TheMealDB recipes
 searchForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const searchTerm = searchInput.value.trim();
-
   if (searchTerm) {
     searchRecipes(searchTerm);
   } else {
@@ -22,27 +41,38 @@ searchForm.addEventListener("submit", (e) => {
   }
 });
 
-randomButton.addEventListener("click", getRandomRecipe);
-
+// Click on a recipe item to get details
 resultsGrid.addEventListener("click", (e) => {
-  const card = e.target.closest(".recipe-item");
-  if (card) {
-    const recipeId = card.dataset.id;
-    getRecipeDetails(recipeId);
+  if (e.target.classList.contains("delete-btn")) {
+    // Handle deleting local recipe
+    const id = e.target.dataset.id;
+    deleteLocalRecipe(id);
+  } else {
+    const card = e.target.closest(".recipe-item");
+    if (card) {
+      const recipeId = card.dataset.id;
+      const source = card.dataset.source || "api"; // distinguish API or local
+      if (source === "api") {
+        getRecipeDetailsFromAPI(recipeId);
+      } else {
+        getRecipeDetailsFromLocal(recipeId);
+      }
+    }
   }
 });
 
+// Modal close events
 modalCloseBtn.addEventListener("click", closeModal);
-
 modal.addEventListener("click", (e) => {
   if (e.target === modal) {
     closeModal();
   }
 });
 
+// Show messages in the UI
 function showMessage(message, isError = false, isLoading = false) {
   messageArea.textContent = message;
-  messageArea.className = "message"; // Reset
+  messageArea.className = "message"; // reset
   if (isError) messageArea.classList.add("error");
   if (isLoading) messageArea.classList.add("loading");
 }
@@ -52,6 +82,7 @@ function clearMessage() {
   messageArea.className = "message";
 }
 
+// Fetch search results from TheMealDB API
 async function searchRecipes(query) {
   showMessage(`Searching for "${query}"...`, false, true);
   resultsGrid.innerHTML = "";
@@ -59,12 +90,11 @@ async function searchRecipes(query) {
   try {
     const response = await fetch(`${SEARCH_API_URL}${query}`);
     if (!response.ok) throw new Error("Network error");
-
     const data = await response.json();
     clearMessage();
 
     if (data.meals) {
-      displayRecipes(data.meals);
+      displayRecipes(data.meals, "api");
     } else {
       showMessage(`No recipes found for "${query}"`, true);
     }
@@ -73,7 +103,8 @@ async function searchRecipes(query) {
   }
 }
 
-function displayRecipes(recipes) {
+// Display recipes in the grid (API or local)
+function displayRecipes(recipes, source = "api") {
   if (!recipes || recipes.length === 0) {
     showMessage("No recipes to display");
     return;
@@ -83,41 +114,21 @@ function displayRecipes(recipes) {
   recipes.forEach((recipe) => {
     const recipeDiv = document.createElement("div");
     recipeDiv.classList.add("recipe-item");
-    recipeDiv.dataset.id = recipe.idMeal;
+    recipeDiv.dataset.id = source === "api" ? recipe.idMeal : recipe.id;
+    recipeDiv.dataset.source = source;
 
     recipeDiv.innerHTML = `
-        <img src="${recipe.strMealThumb}" alt="${recipe.strMeal}" loading="lazy">
-        <h3>${recipe.strMeal}</h3>
+      <img src="${source === "api" ? recipe.strMealThumb : recipe.image}" alt="${source === "api" ? recipe.strMeal : recipe.name}" loading="lazy">
+      <h3>${source === "api" ? recipe.strMeal : recipe.name}</h3>
+      ${source === "local" ? `<button class="delete-btn" data-id="${recipe.id}">Delete</button>` : ""}
     `;
 
     resultsGrid.appendChild(recipeDiv);
   });
 }
 
-async function getRandomRecipe() {
-  showMessage("Fetching a random recipe...", false, true);
-  resultsGrid.innerHTML = "";
-
-  try {
-    const response = await fetch(RANDOM_API_URL);
-    if (!response.ok) throw new Error("Network error");
-    const data = await response.json();
-    clearMessage();
-
-    if (data.meals && data.meals.length > 0) {
-      displayRecipes(data.meals);
-    } else {
-      showMessage("Could not fetch a random recipe. Please try again.", true);
-    }
-  } catch (error) {
-    showMessage(
-      "Failed to fetch a random recipe. Please check your connection and try again.",
-      true
-    );
-  }
-}
-
-async function getRecipeDetails(id) {
+// Show recipe details modal for API recipes
+async function getRecipeDetailsFromAPI(id) {
   modalContent.innerHTML = '<p class="message loading">Loading details...</p>';
   showModal();
 
@@ -138,46 +149,53 @@ async function getRecipeDetails(id) {
   }
 }
 
-function displayRecipeDetails(recipe) {
-  const ingredients = [];
+// Show recipe details modal for locally stored recipes
+async function getRecipeDetailsFromLocal(id) {
+  modalContent.innerHTML = '<p class="message loading">Loading details...</p>';
+  showModal();
 
-  for (let i = 1; i <= 20; i++) {
-    const ingredient = recipe[`strIngredient${i}`]?.trim();
-    const measure = recipe[`strMeasure${i}`]?.trim();
-    if (ingredient) {
-      ingredients.push(`<li>${measure ? `${measure} ` : ""}${ingredient}</li>`);
-    } else {
-      break;
+  try {
+    const response = await fetch(`${LOCAL_API_URL}/${id}`);
+    if (!response.ok) throw new Error("Failed to fetch recipe details.");
+    const recipe = await response.json();
+    displayRecipeDetails(recipe);
+  } catch (error) {
+    modalContent.innerHTML =
+      '<p class="message error">Failed to load recipe details. Check your connection or try again.</p>';
+  }
+}
+
+// Display recipe details in modal (handles both API and local format)
+function displayRecipeDetails(recipe) {
+  let ingredientsHTML = "";
+
+  if (recipe.ingredients && Array.isArray(recipe.ingredients)) {
+    // local recipe format
+    ingredientsHTML = `<ul>${recipe.ingredients.map(i => `<li>${i}</li>`).join("")}</ul>`;
+  } else {
+    // API recipe format
+    const ingredients = [];
+    for (let i = 1; i <= 20; i++) {
+      const ingredient = recipe[`strIngredient${i}`]?.trim();
+      const measure = recipe[`strMeasure${i}`]?.trim();
+      if (ingredient && ingredient.length > 0) {
+        ingredients.push(`<li>${measure ? measure + " " : ""}${ingredient}</li>`);
+      }
     }
+    ingredientsHTML = `<ul>${ingredients.join("")}</ul>`;
   }
 
-  const categoryHTML = recipe.strCategory
-    ? `<h3>Category: ${recipe.strCategory}</h3>`
-    : "";
-  const areaHTML = recipe.strArea ? `<h3>Area: ${recipe.strArea}</h3>` : "";
-  const ingredientsHTML = ingredients.length
-    ? `<h3>Ingredients</h3><ul>${ingredients.join("")}</ul>`
-    : "";
-  const instructionsHTML = `<h3>Instructions</h3><p>${
-    recipe.strInstructions
-      ? recipe.strInstructions.replace(/\r?\n/g, "<br>")
-      : "Instructions not available."
-  }</p>`;
-  const sourceHTML = recipe.strSource
-    ? `<div class="source-wrapper"><a href="${recipe.strSource}" target="_blank">View Original Source</a></div>`
-    : "";
-
   modalContent.innerHTML = `
-    <h2>${recipe.strMeal}</h2>
-    <img src="${recipe.strMealThumb}" alt="${recipe.strMeal}">
-    ${categoryHTML}
-    ${areaHTML}
+    <h2>${recipe.name || recipe.strMeal}</h2>
+    <img src="${recipe.image || recipe.strMealThumb}" alt="${recipe.name || recipe.strMeal}" />
+    <h3>Ingredients</h3>
     ${ingredientsHTML}
-    ${instructionsHTML}
-    ${sourceHTML}
+    <h3>Instructions</h3>
+    <p>${(recipe.instructions || recipe.strInstructions || "").replace(/\r?\n/g, "<br>")}</p>
   `;
 }
 
+// Show/hide modal helpers
 function showModal() {
   modal.classList.remove("hidden");
   document.body.style.overflow = "hidden";
@@ -187,3 +205,71 @@ function closeModal() {
   modal.classList.add("hidden");
   document.body.style.overflow = "";
 }
+
+// Add new recipe handler
+if (addForm) {
+  addForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById("custom-name").value.trim();
+    const ingredientsRaw = document.getElementById("custom-ingredients").value.trim();
+    const instructions = document.getElementById("custom-instructions").value.trim();
+    const image = document.getElementById("custom-image").value.trim() || "https://via.placeholder.com/300x200.png?text=No+Image";
+
+    if (!name || !ingredientsRaw || !instructions) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    // Ingredients array from comma-separated string
+    const ingredients = ingredientsRaw.split(",").map(i => i.trim());
+
+    const newRecipe = { name, ingredients, instructions, image };
+
+    try {
+      const res = await fetch(LOCAL_API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newRecipe),
+      });
+      if (!res.ok) throw new Error("Failed to add recipe.");
+
+      addForm.reset();
+      addForm.classList.add("hidden");
+      addRecipeBtn.style.display = "inline-block";
+      showMessage("Recipe added successfully!");
+      fetchLocalRecipes();
+    } catch (error) {
+      showMessage("Failed to add recipe. Try again.", true);
+    }
+  });
+}
+
+// Fetch and display all local recipes
+async function fetchLocalRecipes() {
+  try {
+    const res = await fetch(LOCAL_API_URL);
+    if (!res.ok) throw new Error("Failed to fetch local recipes.");
+    const data = await res.json();
+    displayRecipes(data, "local");
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Delete local recipe
+async function deleteLocalRecipe(id) {
+  try {
+    const res = await fetch(`${LOCAL_API_URL}/${id}`, {
+      method: "DELETE",
+    });
+    if (!res.ok) throw new Error("Failed to delete recipe.");
+    showMessage("Recipe deleted.");
+    fetchLocalRecipes();
+  } catch (error) {
+    showMessage("Failed to delete recipe.", true);
+  }
+}
+
+// Initial load: fetch and show local recipes
+fetchLocalRecipes();
