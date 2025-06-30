@@ -39,7 +39,7 @@ searchForm.addEventListener("submit", (e) => {
   }
 });
 
-// Click on a recipe item to get details or delete local recipe
+// Click on a recipe item to get details or delete the local recipe
 resultsGrid.addEventListener("click", (e) => {
   if (e.target.classList.contains("delete-btn")) {
     deleteLocalRecipe(e.target.dataset.id);
@@ -63,7 +63,7 @@ function handleModalClose(e) {
 modalCloseBtn.addEventListener("click", handleModalClose);
 modal.addEventListener("click", handleModalClose);
 
-// Show messages in the UI
+// display messages in the User Interface
 function showMessage(message, isError = false, isLoading = false) {
   messageArea.textContent = message;
   messageArea.className = "message";
@@ -132,8 +132,6 @@ async function fetchRecipeDetails(id, source) {
     const response = await fetch(url);
     if (!response.ok) throw new Error("Failed to fetch recipe details.");
     const data = await response.json();
-
-    // For API data, meals array; for local, direct object
     if (source === "api") {
       if (data.meals && data.meals.length > 0) {
         displayRecipeDetails(data.meals[0]);
