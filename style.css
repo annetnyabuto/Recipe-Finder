@@ -1,26 +1,28 @@
 :root {
-  /* Core Colors */
-  --bg-color: #f8f9fa;           /* Light Background */
-  --text-color: #343a40;         /* Dark Text */
-  --primary-color: #4caf50;      /* Used for buttons, borders, highlights */
-  --error-color: #dc3545;        /* For error messages */
-  --warning-color: #ffc107;      /* For loading or warning messages */
-  --modal-bg: rgba(0, 0, 0, 0.5);/* Light mode modal overlay */
-}
+  /* Core Colors for Light Mode */
+  --bg-color: #f8f9fa;           
+  --text-color: #343a40;         
+  --primary-color: #4caf50;      
+  --error-color: #dc3545;        
+  --warning-color: #ffc107;      
+  --modal-bg: rgba(0, 0, 0, 0.5);
 
+/* Dark mode color overrides */
 body.dark-mode {
-  --bg-color: #121212;           /* Dark Background */
-  --text-color: #f1f1f1;         /* Light Text */
-  --primary-color: #bb86fc;      /* Primary accent in dark mode */
-  --modal-bg: rgba(0, 0, 0, 0.8);/* Darker modal overlay */
+  --bg-color: #121212;           
+  --text-color: #f1f1f1;         
+  --primary-color: #bb86fc;      
+  --modal-bg: rgba(0, 0, 0, 0.8);
 }
 
+/* Reset margin, padding and set box-sizing globally */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* Base body styling */
 body {
   font-family: "Poppins", sans-serif;
   line-height: 1.7;
@@ -35,6 +37,7 @@ body {
   text-align: center;
 }
 
+/* Main page heading style */
 h1 {
   font-size: 2.5rem;
   font-weight: 700;
@@ -42,7 +45,6 @@ h1 {
   letter-spacing: -1px;
 }
 
-/* Search box styles */
 .search-box {
   display: flex;
   justify-content: center;
@@ -55,16 +57,18 @@ h1 {
 #search-input {
   padding: 15px 20px;
   font-size: 1rem;
-  flex-grow: 1;
+  flex-grow: 1; 
   border: 1px solid #e9ecef;
-  border-radius: 8px 0 0 8px;
+  border-radius: 8px 0 0 8px; 
   outline: none;
 }
 
+/* Focus state for search input */
 #search-input:focus {
   border-color: var(--primary-color);
 }
 
+/* Search button styling */
 #search-button {
   padding: 13px 25px;
   font-size: 1rem;
@@ -72,15 +76,16 @@ h1 {
   background-color: var(--primary-color);
   color: #fff;
   border: none;
-  border-radius: 0 8px 8px 0;
+  border-radius: 0 8px 8px 0; 
   cursor: pointer;
 }
 
+/* Hover effect for search button */
 #search-button:hover {
   background-color: #388e3c;
 }
 
-/* light and dark theme toggle button */
+/* Theme toggle button container positioning */
 .theme-toggle {
   position: fixed;
   top: 20px;
@@ -90,6 +95,7 @@ h1 {
   align-items: center;
 }
 
+/* Theme toggle button styling */
 #theme-toggle-btn {
   background: none;
   border: 2px solid var(--text-color);
@@ -111,6 +117,7 @@ h1 {
   margin-bottom: 20px;
 }
 
+/* Random recipe button styling */
 .random-recipe-button {
   padding: 10px 25px;
   font-size: 0.95rem;
@@ -129,19 +136,23 @@ h1 {
   transform: translateY(-2px);
 }
 
+/* Message area styling (for status, errors, loading) */
 .message {
   margin: 20px 0;
   font-size: 1.1rem;
 }
 
+/* Error message color */
 .message.error {
   color: var(--error-color);
 }
 
+/* Loading/warning message color */
 .message.loading {
   color: var(--warning-color);
 }
 
+/* Grid layout for displaying recipe cards */
 .search-results {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -149,6 +160,7 @@ h1 {
   margin-top: 30px;
 }
 
+/* Individual recipe card styling */
 .recipe-item {
   background-color: var(--bg-color);
   border-radius: 8px;
@@ -174,34 +186,37 @@ h1 {
   padding: 10px;
 }
 
-/* Modal Styles */
+/* Modal overlay container */
 .recipe-modal-container {
   position: fixed;
-  inset: 0;
+  inset: 0; /* shorthand for top/right/bottom/left 0 */
   background: var(--modal-bg);
-  backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px); 
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 999;
 }
 
+/* Hide modal when hidden class is applied */
 .recipe-modal-container.hidden {
   display: none;
 }
 
+/* Modal content box */
 .recipe-details {
   background: var(--bg-color);
   max-width: 800px;
   width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
+  max-height: 90vh; /* max height relative to viewport */
+  overflow-y: auto; /* enable scroll if content too tall */
   border-radius: 10px;
   padding: 30px;
   position: relative;
   color: var(--text-color);
 }
 
+/* Modal close button style */
 .recipe-detail-btn {
   position: absolute;
   top: 15px;
@@ -213,15 +228,17 @@ h1 {
   width: 40px;
   height: 40px;
   cursor: pointer;
-  transform: rotate(45deg);
+  transform: rotate(45deg); /* rotate to look like an "X" */
 }
 
+/* Image inside modal */
 #recipe-details-content img {
   width: 100%;
   border-radius: 8px;
   margin: 20px 0;
 }
 
+/* Ingredients list styling inside modal */
 #recipe-details-content ul {
   padding-left: 20px;
   text-align: left;
@@ -238,7 +255,6 @@ h1 {
   margin-top: 10px;
 }
 
-/* Add Recipe Form */
 #add-recipe-form {
   max-width: 600px;
   margin: 40px auto;
@@ -253,6 +269,7 @@ h1 {
   margin-bottom: 20px;
 }
 
+/* Inputs, textarea, and buttons inside Add Recipe Form */
 #add-recipe-form input,
 #add-recipe-form textarea,
 #add-recipe-form button {
@@ -277,6 +294,7 @@ h1 {
   background: #388e3c;
 }
 
+/* Hide Add Recipe Form when hidden class is applied */
 #add-recipe-form.hidden {
   display: none;
 }
