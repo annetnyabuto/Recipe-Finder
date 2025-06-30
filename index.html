@@ -6,69 +6,80 @@
   <title>Recipe Finder</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
   <div class="recipe-container">
     <h1>Recipe Finder</h1>
 
+    <!-- Search Form -->
     <form id="search-form" class="search-box">
-      <input type="text" id="search-input" placeholder="Search by name (e.g rice)" required/>
+      <input type="text" id="search-input" placeholder="Search by name (e.g rice)" required />
       <button type="submit" id="search-button">Search</button>
     </form>
-
+    <!-- adding light and dark mode feature-->
+    <div class="theme-toggle">
+        <button id="theme-toggle-btn">🌙 Dark Mode</button>
+    </div>
+    <!-- Add Recipe Button -->
     <div class="random-button-container">
-      <button id="add-recipe-button" class="random-recipe-button">
-        Add Recipe
-      </button>
+      <button id="add-recipe-button" class="random-recipe-button">Add Recipe</button>
     </div>
 
+    <!-- Message Area (for errors, info, loading) -->
     <div class="message" id="message-area"></div>
 
-    <!-- Add Recipe Form (hidden initially) -->
+    <!-- Add Recipe Form (Hidden by default) -->
     <form id="add-recipe-form" class="add-recipe-form hidden">
       <h2>Add Your Recipe</h2>
+      <!-- Recipe Name -->
       <input type="text" id="custom-name" placeholder="Recipe Name" required/>
-      <textarea
-        id="custom-ingredients" placeholder="Ingredients (comma separated)" rows="3" required></textarea>
+      <!-- Ingredients Input -->
+      <textarea id="custom-ingredients" placeholder="Ingredients" rows="3" required></textarea>
+
+      <!-- Instructions Input -->
       <textarea id="custom-instructions" placeholder="Instructions" rows="5" required></textarea>
+
+      <!-- Optional Image URL -->
       <input type="url" id="custom-image" placeholder="Image URL (optional)"/>
+
+      <!-- Submit and Cancel Buttons -->
       <button type="submit">Add Recipe</button>
       <button type="button" id="cancel-add-recipe">Cancel</button>
     </form>
 
+    <!-- Recipe Results Area -->
     <div class="search-results" id="search-results">
-      <!-- Initial example recipes -->
+      <!-- Preloaded Sample Recipes from API -->
       <div class="recipe-item" data-id="52768" data-source="api">
-        <img src="https://www.themealdb.com/images/media/meals/0206h11699013358.jpg" alt="Pancakes"/>
+        <img src="https://www.themealdb.com/images/media/meals/0206h11699013358.jpg" alt="Pancakes" />
         <h3>Blini Pancakes</h3>
       </div>
       <div class="recipe-item" data-id="52804" data-source="api">
-        <img src="https://www.themealdb.com/images/media/meals/41cxjh1683207682.jpg" alt="Beef Caldereta"/>
+        <img src="https://www.themealdb.com/images/media/meals/41cxjh1683207682.jpg" alt="Beef Caldereta" />
         <h3>Beef Caldereta</h3>
       </div>
       <div class="recipe-item" data-id="52951" data-source="api">
-        <img src="https://www.themealdb.com/images/media/meals/kos9av1699014767.jpg" alt="Lamb Pilaf"/>
+        <img src="https://www.themealdb.com/images/media/meals/kos9av1699014767.jpg" alt="Lamb Pilaf" />
         <h3>Lamb Pilaf (Ploy)</h3>
       </div>
       <div class="recipe-item" data-id="52824" data-source="api">
-        <img src="https://www.themealdb.com/images/media/meals/thazgm1555350962.jpg" alt="Home-made Mandazi"/>
+        <img src="https://www.themealdb.com/images/media/meals/thazgm1555350962.jpg" alt="Home-made Mandazi" />
         <h3>Home-made Mandazi</h3>
       </div>
     </div>
   </div>
-
-  <!-- Modal should be OUTSIDE the results container to overlay whole screen -->
+  <!-- Recipe Details Modal -->
   <div class="recipe-modal-container hidden" id="recipe-modal">
     <div class="recipe-details">
+      <!-- Modal Close Button -->
       <button class="recipe-detail-btn">+</button>
+      <!-- Modal Content Placeholder -->
       <div id="recipe-details-content">
-        <!-- dynamic recipe details here -->
       </div>
     </div>
   </div>
-
   <script src="./index.js"></script>
 </body>
 </html>
