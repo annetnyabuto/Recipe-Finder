@@ -4,6 +4,21 @@
   --primary-color: #4caf50;
   --error-color: #dc3545;
   --warning-color: #ffc107;
+  
+  --bg-color: var(--light-bg);
+  --text-color: var(--text-dark);
+  --card-bg: #ffffff;
+  --modal-bg: rgba(0, 0, 0, 0.5);
+  --button-bg: #2196f3;
+}
+
+body.dark-mode {
+  --bg-color: #121212;
+  --text-color: #f1f1f1;
+  --card-bg: #1e1e1e;
+  --modal-bg: rgba(0, 0, 0, 0.8);
+  --button-bg: #bb86fc;
+  --primary-color: #bb86fc;
 }
 
 * {
@@ -15,8 +30,8 @@
 body {
   font-family: "Poppins", sans-serif;
   line-height: 1.7;
-  background-color: var(--light-bg);
-  color: var(--text-dark);
+  background-color: var(--bg-color);
+  color: var(--text-color);
   padding: 30px 15px;
 }
 
@@ -79,7 +94,7 @@ h1 {
   padding: 10px 25px;
   font-size: 0.95rem;
   font-weight: 600;
-  background-color: #2196f3;
+  background-color: var(--button-bg);
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -114,7 +129,7 @@ h1 {
 }
 
 .recipe-item {
-  background-color: #fff;
+  background-color: var(--card-bg);
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -142,7 +157,7 @@ h1 {
 .recipe-modal-container {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--modal-bg);
   backdrop-filter: blur(3px);
   display: flex;
   align-items: center;
@@ -155,7 +170,7 @@ h1 {
 }
 
 .recipe-details {
-  background: #fff;
+  background: var(--card-bg);
   max-width: 800px;
   width: 100%;
   max-height: 90vh;
@@ -163,6 +178,7 @@ h1 {
   border-radius: 10px;
   padding: 30px;
   position: relative;
+  color: var(--text-color);
 }
 
 .recipe-detail-btn {
@@ -170,7 +186,7 @@ h1 {
   top: 15px;
   right: 15px;
   font-size: 2rem;
-  background: var(--light-bg);
+  background: var(--bg-color);
   border: 1px solid #ccc;
   border-radius: 50%;
   width: 40px;
@@ -206,9 +222,10 @@ h1 {
   max-width: 600px;
   margin: 40px auto;
   padding: 20px;
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  color: var(--text-color);
 }
 
 #add-recipe-form h2 {
@@ -241,5 +258,29 @@ h1 {
 
 #add-recipe-form.hidden {
   display: none;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+  display: flex;
+  justify-content: flex-end;
+  margin: 10px auto 20px;
+  max-width: 1200px;
+}
+
+#theme-toggle-btn {
+  background: none;
+  border: 2px solid var(--text-color);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--text-color);
+  transition: background 0.3s;
+}
+
+#theme-toggle-btn:hover {
+  background: var(--text-color);
+  color: var(--bg-color)
 }
 

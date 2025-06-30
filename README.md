@@ -50,8 +50,15 @@ json-server for local backend (custom recipes)
 
 RECIPE FINDER/
 │
-├── db.json 
-├── index.html 
-├── index.js 
-├── README.md
-└── style.css
+├── db.json      #JSON database
+├── index.html   #main html file
+├── index.js     #javascript functionality
+├── README.md    #detailed project documentation
+└── style.css    #stylesheet responsive design
+
+## License
+MIT License
+Copyright © 2025 Annet Nyabuto
+
+You are free to use, modify, and distribute this project for educational purposes only.
+
