@@ -1,0 +1,39 @@
+:root{
+    --light-bg: #f8f9fa;
+    --text-dark: #343a40;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: "Poppins",sans-serif;
+    line-height: 1.7;
+    padding: 30px 15px;
+    background-color: var(--light-bg);
+    color: var(--text-dark);
+}
+.recipe-container{
+    max-width: 1200px;
+    padding: 0 15px;
+    text-align: center;
+}
+h1{
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 30px;
+    letter-spacing: -1px;
+}
+
+.search-box{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 40px;
+    max-width: 600px;
+    box-shadow: 0 4px 15px rgba(0, 0, b0, 0.08);
+    border-radius: 8px;
+}
+#search 
