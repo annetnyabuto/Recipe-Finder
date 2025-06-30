@@ -1,8 +1,6 @@
 const SEARCH_API_URL = "https://www.themealdb.com/api/json/v1/1/search.php?s=";
 const RANDOM_API_URL = "https://www.themealdb.com/api/json/v1/1/random.php";
 const LOOKUP_API_URL = "https://www.themealdb.com/api/json/v1/1/lookup.php?i=";
-
-// Local json-server endpoint for custom recipes
 const LOCAL_API_URL = "http://localhost:3001/recipes";
 
 const searchForm = document.getElementById("search-form");
@@ -41,33 +39,29 @@ searchForm.addEventListener("submit", (e) => {
   }
 });
 
-// Click on a recipe item to get details
+// Click on a recipe item to get details or delete local recipe
 resultsGrid.addEventListener("click", (e) => {
   if (e.target.classList.contains("delete-btn")) {
-    // Handle deleting local recipe
-    const id = e.target.dataset.id;
-    deleteLocalRecipe(id);
+    deleteLocalRecipe(e.target.dataset.id);
   } else {
     const card = e.target.closest(".recipe-item");
     if (card) {
       const recipeId = card.dataset.id;
-      const source = card.dataset.source || "api"; // distinguish API or local
-      if (source === "api") {
-        getRecipeDetailsFromAPI(recipeId);
-      } else {
-        getRecipeDetailsFromLocal(recipeId);
-      }
+      const source = card.dataset.source || "api";
+      fetchRecipeDetails(recipeId, source);
     }
   }
 });
 
-// Modal close events
-modalCloseBtn.addEventListener("click", closeModal);
-modal.addEventListener("click", (e) => {
-  if (e.target === modal) {
+// Modal close events consolidated
+function handleModalClose(e) {
+  if (e.target === modal || e.target === modalCloseBtn) {
     closeModal();
   }
-});
+}
+
+modalCloseBtn.addEventListener("click", handleModalClose);
+modal.addEventListener("click", handleModalClose);
 
 // Show messages in the UI
 function showMessage(message, isError = false, isLoading = false) {
@@ -98,7 +92,7 @@ async function searchRecipes(query) {
     } else {
       showMessage(`No recipes found for "${query}"`, true);
     }
-  } catch (error) {
+  } catch {
     showMessage("Something went wrong. Please try again.", true);
   }
 }
@@ -127,41 +121,30 @@ function displayRecipes(recipes, source = "api") {
   });
 }
 
-// Show recipe details modal for API recipes
-async function getRecipeDetailsFromAPI(id) {
+// Consolidated fetch details function for API/local recipes
+async function fetchRecipeDetails(id, source) {
   modalContent.innerHTML = '<p class="message loading">Loading details...</p>';
   showModal();
 
+  let url = source === "api" ? `${LOOKUP_API_URL}${id}` : `${LOCAL_API_URL}/${id}`;
+
   try {
-    const response = await fetch(`${LOOKUP_API_URL}${id}`);
+    const response = await fetch(url);
     if (!response.ok) throw new Error("Failed to fetch recipe details.");
     const data = await response.json();
 
-    if (data.meals && data.meals.length > 0) {
-      displayRecipeDetails(data.meals[0]);
+    // For API data, meals array; for local, direct object
+    if (source === "api") {
+      if (data.meals && data.meals.length > 0) {
+        displayRecipeDetails(data.meals[0]);
+      } else {
+        modalContent.innerHTML = '<p class="message error">Could not load recipe details.</p>';
+      }
     } else {
-      modalContent.innerHTML =
-        '<p class="message error">Could not load recipe details.</p>';
+      displayRecipeDetails(data);
     }
-  } catch (error) {
-    modalContent.innerHTML =
-      '<p class="message error">Failed to load recipe details. Check your connection or try again.</p>';
-  }
-}
-
-// Show recipe details modal for locally stored recipes
-async function getRecipeDetailsFromLocal(id) {
-  modalContent.innerHTML = '<p class="message loading">Loading details...</p>';
-  showModal();
-
-  try {
-    const response = await fetch(`${LOCAL_API_URL}/${id}`);
-    if (!response.ok) throw new Error("Failed to fetch recipe details.");
-    const recipe = await response.json();
-    displayRecipeDetails(recipe);
-  } catch (error) {
-    modalContent.innerHTML =
-      '<p class="message error">Failed to load recipe details. Check your connection or try again.</p>';
+  } catch {
+    modalContent.innerHTML = '<p class="message error">Failed to load recipe details. Check your connection or try again.</p>';
   }
 }
 
@@ -221,7 +204,7 @@ if (addForm) {
       return;
     }
 
-    // Ingredients array from comma-separated string
+    // Ingredients array 
     const ingredients = ingredientsRaw.split(",").map(i => i.trim());
 
     const newRecipe = { name, ingredients, instructions, image };
@@ -239,7 +222,7 @@ if (addForm) {
       addRecipeBtn.style.display = "inline-block";
       showMessage("Recipe added successfully!");
       fetchLocalRecipes();
-    } catch (error) {
+    } catch {
       showMessage("Failed to add recipe. Try again.", true);
     }
   });
@@ -266,16 +249,16 @@ async function deleteLocalRecipe(id) {
     if (!res.ok) throw new Error("Failed to delete recipe.");
     showMessage("Recipe deleted.");
     fetchLocalRecipes();
-  } catch (error) {
+  } catch {
     showMessage("Failed to delete recipe.", true);
   }
 }
 
 // Initial load: fetch and show local recipes
 fetchLocalRecipes();
-//light and dark mode button
+
+// Light and dark mode toggle button
 const themeToggleBtn = document.getElementById('theme-toggle-btn');
 themeToggleBtn.addEventListener('click', () => {
   document.body.classList.toggle('dark-mode');
 });
-
