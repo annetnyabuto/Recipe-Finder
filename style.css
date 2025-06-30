@@ -6,6 +6,7 @@
   --error-color: #dc3545;        
   --warning-color: #ffc107;      
   --modal-bg: rgba(0, 0, 0, 0.5);
+}
 
 /* Dark mode color overrides */
 body.dark-mode {
