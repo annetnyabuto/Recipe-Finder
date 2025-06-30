@@ -49,12 +49,12 @@ json-server for local backend (custom recipes)
 ## Folder Structure
 
 RECIPE FINDER/
-│
-├── db.json      #JSON database
-├── index.html   #main html file
-├── index.js     #javascript functionality
-├── README.md    #detailed project documentation
-└── style.css    #stylesheet responsive design
+├── db.json           # JSON database
+├── index.html        # Main HTML file
+├── index.js          # JavaScript functionality
+├── README.md         # Detailed project documentation
+└── style.css         # Stylesheet for responsive design
+
 
 ## License
 MIT License

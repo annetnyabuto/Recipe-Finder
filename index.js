@@ -72,7 +72,7 @@ modal.addEventListener("click", (e) => {
 // Show messages in the UI
 function showMessage(message, isError = false, isLoading = false) {
   messageArea.textContent = message;
-  messageArea.className = "message"; // reset
+  messageArea.className = "message";
   if (isError) messageArea.classList.add("error");
   if (isLoading) messageArea.classList.add("loading");
 }
