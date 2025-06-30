@@ -50,9 +50,13 @@ json-server for local backend (custom recipes)
 
 RECIPE FINDER/
 ├── db.json           # JSON database
+
 ├── index.html        # Main HTML file
+
 ├── index.js          # JavaScript functionality
+
 ├── README.md         # Detailed project documentation
+
 └── style.css         # Stylesheet for responsive design
 
 
