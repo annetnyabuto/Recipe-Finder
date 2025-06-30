@@ -1,6 +1,6 @@
 ## Recipe Finder App
 
-The Recipe Finder is a simple web application that allows users to search for recipes, view detailed cooking instructions, and even add their own custom recipes. It fetches data from [TheMealDB API](https://www.themealdb.com/api.php) and also supports storing custom recipes locally using `json-server`.
+The Recipe Finder is a single page web application that allows users to search for recipes, view detailed cooking instructions, and even add their own custom recipes. It fetches data from [TheMealDB API](https://www.themealdb.com/api.php) and also supports storing custom recipes locally using `json-server`.
 
 ## Features
 Search Recipes by name from TheMealDB.
